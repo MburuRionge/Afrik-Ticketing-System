@@ -63,26 +63,49 @@ def terms_and_conditions():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html',
+        current_user=current_user,
+        total_tickets=total_tickets,
+        open_tickets=open_tickets,
+        closed_today=closed_today,
+        avg_response_time=avg_response_time,
+        tickets=tickets,
+        unread_notifications_count=unread_notifications_count
+    )
 
-@app.route('/checkout/<int:event_id>', methods=['GET', 'POST'])
+@app.route('/checkout')
 @login_required
-def checkout_page(event_id):
-    if request.method == 'POST':
-        # Handle checkout process
-        pass
-    return render_template('checkout.html')
+def checkout():
+    return render_template('checkout.html',
+        cart_items=cart_items,
+        subtotal=subtotal,
+        service_fees=service_fees,
+        total_amount=total_amount
+    )
 
-@app.route('/order/confirmation/<int:order_id>')
+@app.route('/order/confirmation/<order_id>')
 @login_required
 def order_confirmation(order_id):
-    # Fetch order details
-    return render_template('order_confirmation.html')
+    order = get_order(order_id)  # Get order details from your database
+    return render_template('order_confirmation.html', order=order)
+
 
 @app.route('/profile')
 @login_required
-def user_profile_page():
+def user_profile():
     return render_template('user_profile.html')
+
+@app.route('/profile/update', methods=['POST'])
+@login_required
+def update_profile():
+    # Handle profile updates
+    pass
+
+@app.route('/profile/preferences', methods=['POST'])
+@login_required
+def update_preferences():
+    # Handle preferences updates
+    pass
 
 @app.route('/history')
 @login_required

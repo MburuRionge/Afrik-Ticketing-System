@@ -1,0 +1,57 @@
+{% macro navbar() %}
+<nav class="bg-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            <!-- Logo and primary nav -->
+            <div class="flex">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="{{ url_for('homepage') }}" class="text-xl font-bold text-blue-600">TicketMaster</a>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:space-x-8">
+                    <a href="{{ url_for('dashboard') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900">
+                        Dashboard
+                    </a>
+                    <a href="{{ url_for('tickets') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">
+                        Tickets
+                    </a>
+                    <a href="{{ url_for('reports') }}" class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900">
+                        Reports
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right side navigation items -->
+            <div class="hidden md:ml-6 md:flex md:items-center">
+                <!-- Notifications -->
+                <div class="relative ml-3">
+                    <button type="button" class="relative p-1 text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">View notifications</span>
+                        <i class="fas fa-bell"></i>
+                        {% if unread_notifications_count > 0 %}
+                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400 ring-2 ring-white"></span>
+                        {% endif %}
+                    </button>
+                </div>
+
+                <!-- Profile dropdown -->
+                <div class="relative ml-3">
+                    <div>
+                        <button type="button" class="flex items-center max-w-xs text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="user-menu-button">
+                            <span class="sr-only">Open user menu</span>
+                            <img class="h-8 w-8 rounded-full" src="{{ current_user.avatar_url }}" alt="">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu button -->
+            <div class="flex items-center md:hidden">
+                <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                    <span class="sr-only">Open main menu</span>
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endmacro %}

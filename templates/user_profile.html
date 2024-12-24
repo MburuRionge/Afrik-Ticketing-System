@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - TicketMaster{% endblock %}
+
+{% from "components/navigation/navbar.html" import navbar %}
+{% from "components/profile/avatar_upload.html" import avatar_upload %}
+{% from "components/profile/personal_info.html" import personal_info %}
+{% from "components/profile/preferences.html" import preferences %}
+
+{% block content %}
+{{ navbar() }}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Profile Settings</h1>
+        <p class="text-gray-600">Manage your account information and preferences</p>
+    </div>
+
+    <div class="space-y-6">
+        <!-- Profile Picture -->
+        {{ avatar_upload(current_user.avatar_url) }}
+
+        <!-- Personal Information -->
+        {{ personal_info(current_user) }}
+
+        <!-- User Preferences -->
+        {{ preferences(current_user.preferences) }}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - TicketMaster{% endblock %}
+
+{% from "components/navigation/navbar.html" import navbar %}
+{% from "components/confirmation/success_message.html" import success_message %}
+{% from "components/confirmation/order_details.html" import order_details %}
+{% from "components/confirmation/action_buttons.html" import action_buttons %}
+
+{% block content %}
+{{ navbar() }}
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="space-y-8">
+        <!-- Success Message -->
+        {{ success_message(order.number) }}
+
+        <!-- Order Details -->
+        {{ order_details(order) }}
+
+        <!-- Action Buttons -->
+        <div class="mt-12">
+            {{ action_buttons() }}
+        </div>
+    </div>
+</div>
+{% endblock %}

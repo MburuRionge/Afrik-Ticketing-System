@@ -1,0 +1,20 @@
+{% macro activity_card(title, date, status, details) %}
+<div class="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow">
+    <h3 class="text-lg font-semibold text-gray-800">{{ title }}</h3>
+    <p class="text-sm text-gray-500">{{ date }}</p>
+    <div class="mt-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+            {% if status == 'completed' %}
+                bg-green-100 text-green-800
+            {% elif status == 'pending' %}
+                bg-yellow-100 text-yellow-800
+            {% else %}
+                bg-gray-100 text-gray-800
+            {% endif %}
+        ">
+            {{ status|title }}
+        </span>
+    </div>
+    <p class="mt-2 text-gray-600">{{ details }}</p>
+</div>
+{% endmacro %}

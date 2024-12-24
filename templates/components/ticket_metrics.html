@@ -1,0 +1,27 @@
+{% macro ticket_metrics(metrics) %}
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    {% for metric in metrics %}
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-500">{{ metric.label }}</p>
+                <p class="mt-1 text-3xl font-semibold text-gray-900">{{ metric.value }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-full flex items-center justify-center {{ metric.bg_color }}">
+                <i class="{{ metric.icon }} text-2xl {{ metric.icon_color }}"></i>
+            </div>
+        </div>
+        {% if metric.trend %}
+        <div class="mt-4">
+            <div class="flex items-center">
+                <span class="{{ metric.trend_color }} text-sm font-medium">
+                    {{ metric.trend }}%
+                </span>
+                <span class="text-gray-500 text-sm ml-2">vs last period</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endmacro %}

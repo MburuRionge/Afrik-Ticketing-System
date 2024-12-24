@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - TicketMaster{% endblock %}
+
+{% from "components/navigation/navbar.html" import navbar %}
+{% from "components/checkout/order_summary.html" import order_summary %}
+{% from "components/checkout/payment_form.html" import payment_form %}
+
+{% block content %}
+{{ navbar() }}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">Checkout</h1>
+        <p class="text-gray-600">Complete your purchase</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+            {{ order_summary(
+                items=cart_items,
+                subtotal=subtotal,
+                fees=service_fees,
+                total=total_amount
+            ) }}
+        </div>
+
+        <!-- Payment Form -->
+        <div class="lg:col-span-2">
+            {{ payment_form() }}
+
+            <!-- Place Order Button -->
+            <div class="mt-6">
+                <button type="submit" form="payment-form" class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                    Place Order
+                </button>
+                <p class="mt-4 text-sm text-gray-500 text-center">
+                    By placing this order, you agree to our 
+                    <a href="{{ url_for('terms') }}" class="text-blue-600 hover:text-blue-500">Terms and Conditions</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - Frequently Asked Questions{% endblock %}
+
+{% block nav %}
+<nav class="bg-gray-800 text-white p-4">
+    <div class="container mx-auto">
+        <ul class="flex space-x-6">
+            <li><a href="{{ url_for('home') }}" class="hover:text-gray-300">Home</a></li>
+            <li><a href="{{ url_for('faq') }}" class="text-blue-300">FAQ</a></li>
+            <!-- Add other navigation items as needed -->
+        </ul>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Frequently Asked Questions</h1>
+
+    <!-- General Questions Section -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">General Questions</h2>
+        <div class="space-y-4">
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none" 
+                        onclick="toggleAccordion(this)">
+                    What is [Your Service/Product]?
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>Detailed explanation of your service or product goes here. Include key features 
+                       and benefits that users should know about.</p>
+                </div>
+            </div>
+
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none"
+                        onclick="toggleAccordion(this)">
+                    How do I get started?
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>Explain the steps to get started with your service. You might want to include:</p>
+                    <ul class="list-disc ml-6 mt-2">
+                        <li>Creating an account</li>
+                        <li>Basic setup process</li>
+                        <li>Initial configuration steps</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account & Billing Section -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Account & Billing</h2>
+        <div class="space-y-4">
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none"
+                        onclick="toggleAccordion(this)">
+                    How do I update my billing information?
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>Explain the process for updating billing information, including any specific 
+                       steps or requirements.</p>
+                </div>
+            </div>
+
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none"
+                        onclick="toggleAccordion(this)">
+                    What payment methods do you accept?
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>List accepted payment methods and any relevant payment processing information.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Support Section -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Technical Support</h2>
+        <div class="space-y-4">
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none"
+                        onclick="toggleAccordion(this)">
+                    How do I contact support?
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>Provide information about support channels and expected response times.</p>
+                </div>
+            </div>
+
+            <div class="border rounded-lg">
+                <button class="w-full text-left px-4 py-3 font-medium focus:outline-none"
+                        onclick="toggleAccordion(this)">
+                    Common troubleshooting steps
+                </button>
+                <div class="faq-content hidden px-4 py-3 bg-gray-50">
+                    <p>List common issues and their solutions, including basic troubleshooting steps.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+function toggleAccordion(button) {
+    // Toggle active state for the clicked button
+    button.classList.toggle('text-blue-600');
+    
+    // Find and toggle the content
+    const content = button.nextElementSibling;
+    content.classList.toggle('hidden');
+    
+    // Optional: Close other open accordions
+    const allContents = document.querySelectorAll('.faq-content');
+    const allButtons = document.querySelectorAll('button');
+    
+    allContents.forEach((item) => {
+        if (item !== content && !item.classList.contains('hidden')) {
+            item.classList.add('hidden');
+        }
+    });
+    
+    allButtons.forEach((item) => {
+        if (item !== button && item.classList.contains('text-blue-600')) {
+            item.classList.remove('text-blue-600');
+        }
+    });
+}
+</script>
+{% endblock %}

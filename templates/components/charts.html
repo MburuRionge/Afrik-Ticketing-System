@@ -1,0 +1,61 @@
+{% macro ticket_charts() %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Ticket Status Distribution -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Ticket Status Distribution</h3>
+        <div class="h-64" id="statusChart"></div>
+    </div>
+
+    <!-- Resolution Time Trend -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Resolution Time Trend</h3>
+        <div class="h-64" id="resolutionChart"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Status Distribution Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Open', 'In Progress', 'Closed'],
+            datasets: [{
+                data: [30, 45, 25],
+                backgroundColor: ['#FCA5A5', '#FCD34D', '#34D399']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Resolution Time Trend Chart
+    const resolutionCtx = document.getElementById('resolutionChart').getContext('2d');
+    new Chart(resolutionCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Avg. Resolution Time (hours)',
+                data: [24, 20, 18, 22, 16, 15],
+                borderColor: '#60A5FA',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endmacro %}
