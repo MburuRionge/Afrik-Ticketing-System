@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Events - Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Search -->
+<div class="bg-blue-600 py-12">
+    <div class="max-w-7xl mx-auto px-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
+            Discover Events
+        </h1>
+        <div class="max-w-3xl mx-auto">
+            <form class="flex flex-col md:flex-row gap-4">
+                <input type="text" 
+                       placeholder="Search events..." 
+                       class="flex-grow px-4 py-2 rounded-lg focus:outline-none"
+                       name="search"
+                       value="{{ request.args.get('search', '') }}">
+                <button type="submit" 
+                        class="px-6 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Section -->
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Filter Sidebar -->
+        <div class="lg:w-1/4">
+            <div class="bg-white rounded-lg shadow p-6 sticky top-4">
+                <h2 class="text-xl font-semibold mb-4">Filters</h2>
+                
+                <!-- Filter Form -->
+                <form method="get" class="space-y-6">
+                    <!-- Categories -->
+                    <div>
+                        <h3 class="font-medium mb-2">Categories</h3>
+                        <div class="space-y-2">
+                            {% for category in ['Concerts', 'Sports', 'Theater', 'Festivals'] %}
+                            <label class="flex items-center">
+                                <input type="checkbox" 
+                                       name="category" 
+                                       value="{{ category }}"
+                                       {% if category in request.args.getlist('category') %}checked{% endif %}
+                                       class="rounded text-blue-600">
+                                <span class="ml-2">{{ category }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div>
+                        <h3 class="font-medium mb-2">Date</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-sm">From</label>
+                                <input type="date" 
+                                       name="date_from"
+                                       value="{{ request.args.get('date_from', '') }}"
+                                       class="w-full rounded border-gray-300 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm">To</label>
+                                <input type="date" 
+                                       name="date_to"
+                                       value="{{ request.args.get('date_to', '') }}"
+                                       class="w-full rounded border-gray-300 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div>
+                        <h3 class="font-medium mb-2">Location</h3>
+                        <select name="location" 
+                                class="w-full rounded border-gray-300 focus:border-blue-500">
+                            <option value="">All Locations</option>
+                            {% for location in ['New York', 'Los Angeles', 'Chicago', 'Houston'] %}
+                            <option value="{{ location }}"
+                                    {% if location == request.args.get('location') %}selected{% endif %}>
+                                {{ location }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div>
+                        <h3 class="font-medium mb-2">Price Range</h3>
+                        <div class="flex gap-2">
+                            <input type="number" 
+                                   name="price_min" 
+                                   placeholder="Min"
+                                   value="{{ request.args.get('price_min', '') }}"
+                                   class="w-1/2 rounded border-gray-300 focus:border-blue-500">
+                            <input type="number" 
+                                   name="price_max" 
+                                   placeholder="Max"
+                                   value="{{ request.args.get('price_max', '') }}"
+                                   class="w-1/2 rounded border-gray-300 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Apply Filters Button -->
+                    <button type="submit" 
+                            class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="lg:w-3/4">
+            <!-- Sort Options -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                <div class="mb-4 sm:mb-0">
+                    <span class="text-gray-600">Showing {{ events.total }} events</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <label class="text-gray-600">Sort by:</label>
+                    <select name="sort" 
+                            class="rounded border-gray-300 focus:border-blue-500"
+                            onchange="this.form.submit()">
+                        <option value="date_asc" {% if request.args.get('sort') == 'date_asc' %}selected{% endif %}>
+                            Date (Earliest)
+                        </option>
+                        <option value="date_desc" {% if request.args.get('sort') == 'date_desc' %}selected{% endif %}>
+                            Date (Latest)
+                        </option>
+                        <option value="price_asc" {% if request.args.get('sort') == 'price_asc' %}selected{% endif %}>
+                            Price (Low to High)
+                        </option>
+                        <option value="price_desc" {% if request.args.get('sort') == 'price_desc' %}selected{% endif %}>
+                            Price (High to Low)
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for event in events.items %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                    <img src="{{ event.image_url or '/api/placeholder/400/200' }}" 
+                         alt="{{ event.title }}" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold mb-2">{{ event.title }}</h2>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ event.date.strftime('%B %d, %Y') }}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span>{{ event.venue }}</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-blue-600">${{ "%.2f"|format(event.price) }}</span>
+                            <a href="{{ url_for('event_details', event_id=event.id) }}" 
+                               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if events.pages > 1 %}
+            <div class="mt-8 flex justify-center">
+                <div class="flex space-x-2">
+                    {% if events.has_prev %}
+                    <a href="{{ url_for('event_listing', page=events.prev_num, **request.args) }}" 
+                       class="px-4 py-2 bg-white text-blue-600 rounded border hover:bg-gray-50 transition">
+                        Previous
+                    </a>
+                    {% endif %}
+                    
+                    {% for page in events.iter_pages() %}
+                        {% if page %}
+                        <a href="{{ url_for('event_listing', page=page, **request.args) }}" 
+                           class="px-4 py-2 {% if page == events.page %}bg-blue-600 text-white{% else %}bg-white text-blue-600{% endif %} rounded border hover:bg-gray-50 transition">
+                            {{ page }}
+                        </a>
+                        {% else %}
+                        <span class="px-4 py-2">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if events.has_next %}
+                    <a href="{{ url_for('event_listing', page=events.next_num, **request.args) }}" 
+                       class="px-4 py-2 bg-white text-blue-600 rounded border hover:bg-gray-50 transition">
+                        Next
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
