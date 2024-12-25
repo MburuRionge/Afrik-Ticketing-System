@@ -1,0 +1,278 @@
+{% extends "admin_base.html" %}
+
+{% block title %}User Management - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    {% block sidebar %}
+    {{ super() }}
+    {% endblock %}
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white shadow">
+            <div class="px-4 py-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-semibold text-gray-900">User Management</h1>
+                    
+                    <!-- Search and Filter Controls -->
+                    <div class="flex space-x-4">
+                        <div class="relative">
+                            <input type="text" 
+                                   name="search"
+                                   placeholder="Search users..."
+                                   class="w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <select name="role" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">All Roles</option>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                        <select name="status" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                        <button onclick="window.location.href='{{ url_for('admin.add_user') }}'"
+                                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                            Add User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- User List -->
+        <main class="flex-1 overflow-y-auto bg-gray-100 p-6">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-4 rounded-md p-4 {% if category == 'error' %}bg-red-50{% else %}bg-green-50{% endif %}">
+                            <p class="text-sm {% if category == 'error' %}text-red-800{% else %}text-green-800{% endif %}">
+                                {{ message }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Users Table -->
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                User
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Role
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Last Login
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Registered
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for user in users %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <span class="text-xl font-medium text-gray-500">
+                                                {{ user.name[0]|upper }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
+                                        <div class="text-sm text-gray-500">{{ user.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if user.role == 'admin' %}
+                                        bg-purple-100 text-purple-800
+                                    {% elif user.role == 'staff' %}
+                                        bg-blue-100 text-blue-800
+                                    {% else %}
+                                        bg-gray-100 text-gray-800
+                                    {% endif %}">
+                                    {{ user.role|title }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if user.status == 'active' %}
+                                        bg-green-100 text-green-800
+                                    {% elif user.status == 'inactive' %}
+                                        bg-gray-100 text-gray-800
+                                    {% else %}
+                                        bg-red-100 text-red-800
+                                    {% endif %}">
+                                    {{ user.status|title }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ user.created_at.strftime('%Y-%m-%d') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-3">
+                                    <!-- View Button -->
+                                    <button onclick="viewUser('{{ user.id }}')"
+                                            class="text-blue-600 hover:text-blue-900">
+                                        View
+                                    </button>
+                                    <!-- Edit Button -->
+                                    <button onclick="editUser('{{ user.id }}')"
+                                            class="text-indigo-600 hover:text-indigo-900">
+                                        Edit
+                                    </button>
+                                    <!-- Deactivate/Activate Button -->
+                                    {% if user.status == 'active' %}
+                                    <button onclick="confirmDeactivate('{{ user.id }}')"
+                                            class="text-red-600 hover:text-red-900">
+                                        Deactivate
+                                    </button>
+                                    {% else %}
+                                    <button onclick="confirmActivate('{{ user.id }}')"
+                                            class="text-green-600 hover:text-green-900">
+                                        Activate
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        {% if users.has_prev %}
+                        <a href="{{ url_for('admin.users', page=users.prev_num) }}"
+                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Previous
+                        </a>
+                        {% endif %}
+                        {% if users.has_next %}
+                        <a href="{{ url_for('admin.users', page=users.next_num) }}"
+                           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Next
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Showing
+                                <span class="font-medium">{{ users.first_item }}</span>
+                                to
+                                <span class="font-medium">{{ users.last_item }}</span>
+                                of
+                                <span class="font-medium">{{ users.total }}</span>
+                                results
+                            </p>
+                        </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                {% for page in users.iter_pages() %}
+                                    {% if page %}
+                                        <a href="{{ url_for('admin.users', page=page) }}"
+                                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50
+                                                  {% if page == users.page %}z-10 bg-blue-50 border-blue-500 text-blue-600{% endif %}">
+                                            {{ page }}
+                                        </a>
+                                    {% else %}
+                                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                            ...
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div id="modalIcon" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modalTitle">
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500" id="modalMessage">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="confirmAction"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
+                    Confirm
+                </button>
+                <button type="button" onclick="closeModal()"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let userToModify = null;
+let actionType = null;
+
+function viewUser(userId) {
+    window.location.href = "{{ url_for('admin.view_user', user_id='') }}" + userId;
+}
+
+function editUser(userId) {
+    window.location.href = "{{ url_for('admin.edit_user', user_id='') }}" + userId;
+}
+
+function confirmDeactivate(userId) {
+    userToModify = userId;
+    actionType = 'deactivate';
+    
+    document.getElementById('modalIcon').innerHTML = `
+        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+    `;
+    document.getElementById('modalTitle').textContent = 'Deactivate User';
+    document.getElementById('modalMessage').textContent = 'Are you sure you want to deactivate this user? They will not be able to log in until reactivated.';
+    document.getElementById('confirmAction').className =

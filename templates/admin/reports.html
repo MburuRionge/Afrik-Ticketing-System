@@ -1,0 +1,125 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Reports Dashboard{% endblock %}
+
+{% block sidebar %}
+<div class="sidebar p-4 bg-gray-800 text-white min-h-screen">
+    <h3 class="text-lg font-bold mb-4">Reports</h3>
+    <nav class="space-y-2">
+        <a href="#sales" class="block py-2 px-4 hover:bg-gray-700 rounded">Sales Analytics</a>
+        <a href="#users" class="block py-2 px-4 hover:bg-gray-700 rounded">User Activity</a>
+        <a href="#events" class="block py-2 px-4 hover:bg-gray-700 rounded">Event Performance</a>
+        <a href="#downloads" class="block py-2 px-4 hover:bg-gray-700 rounded">Download Reports</a>
+    </nav>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+    <!-- Sales Analytics Section -->
+    <section id="sales" class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Sales Analytics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-3">Revenue Overview</h3>
+                <div class="h-64">
+                    <!-- Chart container -->
+                    {{ sales_chart|safe }}
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-3">Sales Summary</h3>
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left py-2">Period</th>
+                            <th class="text-right py-2">Revenue</th>
+                            <th class="text-right py-2">Growth</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for period in sales_data %}
+                        <tr>
+                            <td class="py-2">{{ period.name }}</td>
+                            <td class="text-right">${{ period.revenue }}</td>
+                            <td class="text-right">{{ period.growth }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Activity Section -->
+    <section id="users" class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">User Activity</h2>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="p-4 bg-gray-50 rounded">
+                    <h4 class="text-sm font-medium text-gray-500">Active Users</h4>
+                    <p class="text-2xl font-bold">{{ active_users }}</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded">
+                    <h4 class="text-sm font-medium text-gray-500">New Signups</h4>
+                    <p class="text-2xl font-bold">{{ new_signups }}</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded">
+                    <h4 class="text-sm font-medium text-gray-500">Engagement Rate</h4>
+                    <p class="text-2xl font-bold">{{ engagement_rate }}%</p>
+                </div>
+            </div>
+            <div class="h-64">
+                {{ user_activity_chart|safe }}
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Performance Section -->
+    <section id="events" class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Event Performance</h2>
+        <div class="bg-white p-4 rounded-lg shadow">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th class="text-left py-2">Event Name</th>
+                        <th class="text-right py-2">Attendees</th>
+                        <th class="text-right py-2">Revenue</th>
+                        <th class="text-right py-2">Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td class="py-2">{{ event.name }}</td>
+                        <td class="text-right">{{ event.attendees }}</td>
+                        <td class="text-right">${{ event.revenue }}</td>
+                        <td class="text-right">{{ event.rating }}/5</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Downloadable Reports Section -->
+    <section id="downloads" class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Download Reports</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for report in available_reports %}
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h3 class="text-lg font-semibold mb-2">{{ report.title }}</h3>
+                <p class="text-gray-600 mb-4">{{ report.description }}</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Last updated: {{ report.last_updated }}</span>
+                    <a href="{{ report.download_url }}" 
+                       class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        Download
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

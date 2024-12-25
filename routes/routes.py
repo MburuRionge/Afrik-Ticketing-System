@@ -121,12 +121,10 @@ def payment_page(order_id):
     return render_template('payment.html')
 
 # Admin Routes
-@app.route('/admin/login', methods=['GET', 'POST'])
-def admin_login_page():
-    if request.method == 'POST':
-        # Handle admin login
-        pass
-    return render_template('admin/login.html')
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = AdminLoginForm()  # Create this form class
+    return render_template('admin/login.html', form=form)
 
 @app.route('/admin/dashboard')
 @admin_required
@@ -141,10 +139,15 @@ def event_management():
         pass
     return render_template('admin/event_mgmt.html')
 
-@app.route('/admin/tickets')
+@app.route('/tickets')
 @admin_required
-def ticket_management():
-    return render_template('admin/ticket_mgmt.html')
+def tickets():
+    return render_template('admin/ticket_mgmt.html',
+        tickets=tickets_pagination,  # SQLAlchemy pagination object
+        events=events_list,         # List of all events for filter dropdown
+        current_page=page,
+        total_pages=total_pages
+    )
 
 @app.route('/admin/users')
 @admin_required

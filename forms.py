@@ -38,3 +38,6 @@ class PaymentForm(FlaskForm):
     cvv = StringField('CVV', validators=[DataRequired(), Length(min=3, max=4)])
     name_on_card = StringField('Name on Card', validators=[DataRequired()])
     submit = SubmitField('Pay Now')
+    
+#class PaymentForm(FlaskForm):
+#    csrf_token = csrf.CSRFTokenField()

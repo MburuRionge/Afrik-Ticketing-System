@@ -46,18 +46,18 @@ class Ticket(db.Model):
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    total_amount = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String(50), default='pending')  # pending, paid, cancelled
-    payment_id = db.Column(db.String(200))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    quantity = db.Column(db.Integer)
+    total_amount = db.Column(db.Decimal)
+    status = db.Column(db.String(20))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    tickets = db.relationship('Ticket', backref='order', lazy=True)
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
-    amount = db.Column(db.Float, nullable=False)
-    payment_method = db.Column(db.String(50))
-    transaction_id = db.Column(db.String(200))
-    status = db.Column(db.String(50))  # success, failed, pending
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
+    amount = db.Column(db.Decimal)
+    payment_method = db.Column(db.String(20))
+    payment_intent_id = db.Column(db.String(100))
+    status = db.Column(db.String(20))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

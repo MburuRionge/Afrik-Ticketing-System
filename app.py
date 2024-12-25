@@ -4,6 +4,10 @@ from datetime import datetime
 import qrcode
 import io
 import base64
+import stripe
+
+
+stripe.api_key = 'your_stripe_secret_key'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
