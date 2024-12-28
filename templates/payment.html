@@ -41,36 +41,39 @@
                     
                     <!-- Payment Method Selection -->
                     <div class="space-y-4">
-                        <div class="flex space-x-4">
-                            <label class="flex items-center">
-                                <input type="radio" name="payment_method" value="card" checked
-                                    class="form-radio h-4 w-4 text-blue-600">
-                                <span class="ml-2">Credit Card</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" name="payment_method" value="paypal"
-                                    class="form-radio h-4 w-4 text-blue-600">
-                                <span class="ml-2">PayPal</span>
-                            </label>
-                        </div>
+                        <fieldset>
+                            <legend class="sr-only">Payment Method</legend>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="payment_method" value="card" checked
+                                        class="form-radio h-4 w-4 text-blue-600">
+                                    <span class="ml-2">Credit Card</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="payment_method" value="paypal"
+                                        class="form-radio h-4 w-4 text-blue-600">
+                                    <span class="ml-2">PayPal</span>
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
 
                     <!-- Credit Card Form -->
                     <div id="card-payment-form" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Card Number</label>
-                                <input type="text" name="card_number" placeholder="1234 5678 9012 3456"
+                                <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number</label>
+                                <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" title="Enter your card number"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Expiration Date</label>
-                                <input type="text" name="expiry" placeholder="MM/YY"
+                                <label for="expiry" class="block text-sm font-medium text-gray-700">Expiration Date</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" title="Enter expiration date in MM/YY format"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">CVV</label>
-                                <input type="text" name="cvv" placeholder="123"
+                                <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" title="Enter the CVV from the back of your card"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                         </div>
@@ -86,18 +89,18 @@
                         <h3 class="text-lg font-medium text-gray-900">Billing Information</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">First Name</label>
-                                <input type="text" name="first_name" required
+                                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                                <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required title="Provide your first name"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Last Name</label>
-                                <input type="text" name="last_name" required
+                                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required title="Provide your last name"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div class="col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" name="email" required
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                <input type="email" id="email" name="email" placeholder="Enter your email address" required title="Provide your email address"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                         </div>
