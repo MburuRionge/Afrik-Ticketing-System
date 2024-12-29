@@ -1,7 +1,8 @@
-from flask import Flask, Blueprint, render_template, redirect, url_for, request, flash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from functools import wraps
 from datetime import datetime
 from app.models import Event
+from flask_login import current_user, login_required # For handling user authentication
 
 home_bp = Blueprint('home', __name__)
 
@@ -11,7 +12,7 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             flash('Please log in to access this page', 'error')
-            return redirect(url_for('login'))
+            return redirect(url_for('home.login'))  # Use 'home.login'
         return f(*args, **kwargs)
     return decorated_function
 
@@ -53,6 +54,13 @@ def terms_and_conditions():
 @home_bp.route('/dashboard')
 @login_required
 def dashboard():
+    # Placeholder data - REPLACE with actual data fetching from database
+    total_tickets = 50
+    open_tickets = 10
+    closed_today = 5
+    avg_response_time = "24 hours"
+    tickets = [] # this is just an example.
+    unread_notifications_count = 2
     return render_template('dashboard.html',
         current_user=current_user,
         total_tickets=total_tickets,
@@ -66,6 +74,11 @@ def dashboard():
 @home_bp.route('/checkout')
 @login_required
 def checkout():
+    # Placeholder data - REPLACE with actual data fetching from database
+    cart_items = []
+    subtotal = 100.00
+    service_fees = 10.00
+    total_amount = 110.00
     return render_template('checkout.html',
         cart_items=cart_items,
         subtotal=subtotal,
@@ -73,7 +86,16 @@ def checkout():
         total_amount=total_amount
     )
 
-@home_bp.route('/order/confirmation/<order_id>')
+def get_order(order_id):
+    # Dummy function, replace this with an actual database retrieval.
+    class DummyOrder:
+        def __init__(self, id):
+          self.id = id
+          self.order_date = datetime.utcnow()
+        
+    return DummyOrder(order_id)
+
+@home_bp.route('/order/confirmation/<int:order_id>')
 @login_required
 def order_confirmation(order_id):
     order = get_order(order_id)  # Get order details from your database

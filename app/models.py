@@ -1,4 +1,5 @@
 from datetime import datetime
+from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, Numeric  # Use Numeric instead of Decimal
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -62,3 +63,11 @@ class Payment(db.Model):
     payment_intent_id = db.Column(db.String(100))
     status = db.Column(db.String(20))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(120), nullable = False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'

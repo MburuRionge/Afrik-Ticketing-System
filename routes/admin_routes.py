@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, flash, redirect, session, url_for
-from app.models import Event
 from functools import wraps
 from forms.forms import *
+from app.models import Event, Ticket  # Import Ticket model
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -11,21 +11,21 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if 'admin_id' not in session:
             flash('Admin access required', 'error')
-            return redirect(url_for('admin_login'))
+            return redirect(url_for('admin.login'))  # Correct URL for blueprint
         return f(*args, **kwargs)
     return decorated_function
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    form = AdminLoginForm()  # Create this form class
+    form = AdminLoginForm()
     return render_template('admin/login.html', form=form)
 
-@admin_bp.route('/admin/dashboard')
+@admin_bp.route('/dashboard')
 @admin_required
 def admin_dashboard():
     return render_template('admin/dashboard.html')
 
-@admin_bp.route('/admin/events', methods=['GET', 'POST'])
+@admin_bp.route('/events', methods=['GET', 'POST'])
 @admin_required
 def event_management():
     if request.method == 'POST':
@@ -33,7 +33,6 @@ def event_management():
         pass
     return render_template('admin/event_mgmt.html')
 
-from flask import request
 
 @admin_bp.route('/tickets')
 @admin_required
@@ -56,23 +55,24 @@ def tickets():
     # Render the template with the required context variables
     return render_template(
         'admin/ticket_mgmt.html',
-        tickets=tickets_pagination.items,  # List of tickets on the current page
-        events=events_list,                # List of all events for filter dropdown
-        current_page=page,                 # Current page number
-        total_pages=total_pages            # Total number of pages
+        tickets=tickets_pagination.items,
+        events=events_list,
+        current_page=page,
+        total_pages=total_pages
     )
 
-@admin_bp.route('/admin/users')
+
+@admin_bp.route('/users')
 @admin_required
 def user_management():
     return render_template('admin/user_mgmt.html')
 
-@admin_bp.route('/admin/reports')
+@admin_bp.route('/reports')
 @admin_required
 def reports_page():
     return render_template('admin/reports.html')
 
-@admin_bp.route('/admin/settings')
+@admin_bp.route('/settings')
 @admin_required
 def settings_page():
     return render_template('admin/settings.html')

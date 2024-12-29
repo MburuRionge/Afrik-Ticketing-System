@@ -1,0 +1,25 @@
+.hero-section {
+    /* Any other hero styles */
+    position: relative;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-background {
+    background-image: url('/api/placeholder/1920/600');
+    filter: brightness(0.7);
+}
+
+.hero-content {
+    /*Any other hero content styles */
+    position: relative;
+    z-index: 10;
+    max-width: 6xl;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+}
