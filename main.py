@@ -13,4 +13,4 @@ if __name__ == '__main__':
     # Start the Flask development server
     # Setting debug=True enables the debugger, allows for automatic reloading
     # of the server upon code changes, and provides detailed error messages
-    app.run(debug=True)
+    app.run(debug=False)

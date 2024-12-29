@@ -2,8 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from app.routes.payment_route import payment_bp  # Import the payment routes
-from app.routes.routes import home_bp  # Import the general routes
+from routes.payment_route import payment_bp  # Import the payment routes
+from routes.routes import home_bp  # Import the general routes
 
 db = SQLAlchemy()
 migrate = Migrate()
