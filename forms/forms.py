@@ -8,6 +8,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Login')
 
+class AdminLoginForm(FlaskForm):
+    email = StringField('Admin Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Admin Password', validators=[DataRequired()])
+    submit = SubmitField('Admin Login')
+
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -38,6 +43,6 @@ class PaymentForm(FlaskForm):
     cvv = StringField('CVV', validators=[DataRequired(), Length(min=3, max=4)])
     name_on_card = StringField('Name on Card', validators=[DataRequired()])
     submit = SubmitField('Pay Now')
-    
-#class PaymentForm(FlaskForm):
-#    csrf_token = csrf.CSRFTokenField()
+
+# class PaymentForm(FlaskForm):
+#     csrf_token = csrf.CSRFTokenField()

@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import current_user, login_required
 from datetime import datetime
 from decimal import Decimal
-from .forms import PaymentForm
-from .models import Event, Order, Payment, db
+from forms.forms import PaymentForm
+from app.models import Event, Order, Payment, db
 import stripe
 
 # Initialize blueprint
