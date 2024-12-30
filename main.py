@@ -2,14 +2,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from routes.payment_route import payment_bp
-from routes.routes import home_bp
-from routes.admin_routes import admin_bp
+from routes.payment_route import payment
+from routes.routes import home
+from routes.admin_routes import admin
 from app import models
 
 db = SQLAlchemy()
 migrate = Migrate()
-login_manager = LoginManager()
+
 
 def create_app():
     # Initialize the Flask app
@@ -21,13 +21,15 @@ def create_app():
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)
+  
+    app.register_blueprint(home)
+    app.register_blueprint(payment, url_prefix='/payment')
+    app.register_blueprint(admin, url_prefix='/admin')
+  
+    login_manager = LoginManager()
     # Set login view route name
     login_manager.login_view = 'home.login'
-    # Register Blueprints
-    app.register_blueprint(home_bp)
-    app.register_blueprint(payment_bp, url_prefix='/payment')
-    app.register_blueprint(admin_bp, url_prefix='/admin')
+    login_manager.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id):

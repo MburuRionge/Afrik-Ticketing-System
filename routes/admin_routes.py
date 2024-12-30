@@ -3,7 +3,7 @@ from functools import wraps
 from forms.forms import *
 from app.models import Event, Ticket  # Import Ticket model
 
-admin_bp = Blueprint('admin', __name__)
+admin = Blueprint('admin', __name__)
 
 # Admin decorator for protected admin routes
 def admin_required(f):
@@ -15,17 +15,17 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@admin_bp.route('/login', methods=['GET', 'POST'])
+@admin.route('/login', methods=['GET', 'POST'])
 def login():
     form = AdminLoginForm()
     return render_template('admin/login.html', form=form)
 
-@admin_bp.route('/dashboard')
+@admin.route('/dashboard')
 @admin_required
 def admin_dashboard():
     return render_template('admin/dashboard.html')
 
-@admin_bp.route('/events', methods=['GET', 'POST'])
+@admin.route('/events', methods=['GET', 'POST'])
 @admin_required
 def event_management():
     if request.method == 'POST':
@@ -34,7 +34,7 @@ def event_management():
     return render_template('admin/event_mgmt.html')
 
 
-@admin_bp.route('/tickets')
+@admin.route('/tickets')
 @admin_required
 def tickets():
     # Set the default page number and items per page
@@ -62,26 +62,26 @@ def tickets():
     )
 
 
-@admin_bp.route('/users')
+@admin.route('/users')
 @admin_required
 def user_management():
     return render_template('admin/user_mgmt.html')
 
-@admin_bp.route('/reports')
+@admin.route('/reports')
 @admin_required
 def reports_page():
     return render_template('admin/reports.html')
 
-@admin_bp.route('/settings')
+@admin.route('/settings')
 @admin_required
 def settings_page():
     return render_template('admin/settings.html')
 
 # Error handlers
-@admin_bp.errorhandler(404)
+@admin.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@admin_bp.errorhandler(500)
+@admin.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500

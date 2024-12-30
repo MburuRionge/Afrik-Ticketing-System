@@ -7,7 +7,7 @@ from app.models import Event, Order, Payment, db
 import stripe
 
 # Initialize blueprint
-payment_bp = Blueprint('payment', __name__)
+payment = Blueprint('payment', __name__)
 
 # Constants
 PROCESSING_FEE_PERCENTAGE = Decimal('0.05')  # 5% processing fee
@@ -30,7 +30,7 @@ def create_paypal_order(order_id, total_amount):
 # --- End Placeholder Functions ---
 
 
-@payment_bp.route('/payment/<int:event_id>/<int:ticket_quantity>', methods=['GET', 'POST'])
+@payment.route('/payment/<int:event_id>/<int:ticket_quantity>', methods=['GET', 'POST'])
 @login_required
 def payment_page(event_id, ticket_quantity):
     # Get event details
@@ -146,7 +146,7 @@ def payment_page(event_id, ticket_quantity):
     
     return redirect(url_for('payment.payment_page', event_id=event_id, ticket_quantity=ticket_quantity))
 
-@payment_bp.route('/payment/confirm/<payment_intent_id>')
+@payment.route('/payment/confirm/<payment_intent_id>')
 @login_required
 def confirm(payment_intent_id):
     # Retrieve payment and order details
@@ -161,7 +161,7 @@ def confirm(payment_intent_id):
     )
 
 # Webhook handler for payment status updates
-@payment_bp.route('/payment/webhook', methods=['POST'])
+@payment.route('/payment/webhook', methods=['POST'])
 def webhook():
     payload = request.get_json()
     event_type = payload['type']
