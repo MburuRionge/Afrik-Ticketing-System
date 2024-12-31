@@ -20,22 +20,37 @@
                     <!-- Search and Filter Controls -->
                     <div class="flex space-x-4">
                         <div class="relative">
+                            <label for="ticket-search" class="sr-only">Search tickets</label>
                             <input type="text" 
+                                   id="ticket-search"
+                                   name="ticket-search"
                                    placeholder="Search tickets..."
                                    class="w-64 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
-                        <select class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="">All Events</option>
-                            {% for event in events %}
-                                <option value="{{ event.id }}">{{ event.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <select class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <option value="">All Statuses</option>
-                            <option value="active">Active</option>
-                            <option value="used">Used</option>
-                            <option value="revoked">Revoked</option>
-                        </select>
+                        <div>
+                            <label for="event-filter" class="sr-only">Filter by event</label>
+                            <select id="event-filter" 
+                                    name="event-filter"
+                                    aria-label="Filter tickets by event"
+                                    class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">All Events</option>
+                                {% for event in events %}
+                                    <option value="{{ event.id }}">{{ event.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="status-filter" class="sr-only">Filter by status</label>
+                            <select id="status-filter" 
+                                    name="status-filter"
+                                    aria-label="Filter tickets by status"
+                                    class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="used">Used</option>
+                                <option value="revoked">Revoked</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,7 +62,8 @@
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="mb-4 rounded-md p-4 {% if category == 'error' %}bg-red-50{% else %}bg-green-50{% endif %}">
+                        <div class="mb-4 rounded-md p-4 {% if category == 'error' %}bg-red-50{% else %}bg-green-50{% endif %}"
+                             role="alert">
                             <p class="text-sm {% if category == 'error' %}text-red-800{% else %}text-green-800{% endif %}">
                                 {{ message }}
                             </p>
@@ -58,25 +74,25 @@
 
             <!-- Tickets Table -->
             <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200" role="grid">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Ticket ID
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Event
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 User
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Purchase Date
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
@@ -112,20 +128,20 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-3">
-                                    <!-- View Button -->
                                     <button onclick="viewTicket('{{ ticket.id }}')"
-                                            class="text-blue-600 hover:text-blue-900">
+                                            class="text-blue-600 hover:text-blue-900"
+                                            aria-label="View ticket {{ ticket.id }}">
                                         View
                                     </button>
-                                    <!-- Edit Button -->
                                     <button onclick="editTicket('{{ ticket.id }}')"
-                                            class="text-indigo-600 hover:text-indigo-900">
+                                            class="text-indigo-600 hover:text-indigo-900"
+                                            aria-label="Edit ticket {{ ticket.id }}">
                                         Edit
                                     </button>
-                                    <!-- Revoke Button -->
                                     {% if ticket.status == 'active' %}
                                     <button onclick="confirmRevoke('{{ ticket.id }}')"
-                                            class="text-red-600 hover:text-red-900">
+                                            class="text-red-600 hover:text-red-900"
+                                            aria-label="Revoke ticket {{ ticket.id }}">
                                         Revoke
                                     </button>
                                     {% endif %}
@@ -140,11 +156,13 @@
                 <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                     <div class="flex-1 flex justify-between sm:hidden">
                         <a href="{{ url_for('admin.tickets', page=tickets.prev_num) }}"
-                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                           {% if not tickets.has_prev %}aria-disabled="true"{% endif %}>
                             Previous
                         </a>
                         <a href="{{ url_for('admin.tickets', page=tickets.next_num) }}"
-                           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                           {% if not tickets.has_next %}aria-disabled="true"{% endif %}>
                             Next
                         </a>
                     </div>
@@ -160,23 +178,23 @@
                                 results
                             </p>
                         </div>
-                        <div>
-                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                {% for page in tickets.iter_pages() %}
-                                    {% if page %}
-                                        <a href="{{ url_for('admin.tickets', page=page) }}"
-                                           class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50
-                                                  {% if page == tickets.page %}z-10 bg-blue-50 border-blue-500 text-blue-600{% endif %}">
-                                            {{ page }}
-                                        </a>
-                                    {% else %}
-                                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                                            ...
-                                        </span>
-                                    {% endif %}
-                                {% endfor %}
-                            </nav>
-                        </div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            {% for page in tickets.iter_pages() %}
+                                {% if page %}
+                                    <a href="{{ url_for('admin.tickets', page=page) }}"
+                                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50
+                                              {% if page == tickets.page %}z-10 bg-blue-50 border-blue-500 text-blue-600{% endif %}"
+                                       aria-label="Page {{ page }}"
+                                       {% if page == tickets.page %}aria-current="page"{% endif %}>
+                                        {{ page }}
+                                    </a>
+                                {% else %}
+                                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                        ...
+                                    </span>
+                                {% endif %}
+                            {% endfor %}
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -185,7 +203,11 @@
 </div>
 
 <!-- Revoke Confirmation Modal -->
-<div id="revokeModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+<div id="revokeModal" 
+     class="hidden fixed z-10 inset-0 overflow-y-auto" 
+     role="dialog" 
+     aria-labelledby="modal-title" 
+     aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -199,7 +221,7 @@
                         </svg>
                     </div>
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                             Revoke Ticket
                         </h3>
                         <div class="mt-2">
@@ -211,11 +233,13 @@
                 </div>
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" id="confirmRevoke"
+                <button type="button" 
+                        id="confirmRevoke"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                     Revoke
                 </button>
-                <button type="button" onclick="closeRevokeModal()"
+                <button type="button" 
+                        onclick="closeRevokeModal()"
                         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                     Cancel
                 </button>
@@ -251,4 +275,4 @@ document.getElementById('confirmRevoke').addEventListener('click', function() {
     }
 });
 </script>
-{% endblock %}
+{% en
