@@ -2,9 +2,22 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash,
 from functools import wraps
 from datetime import datetime
 from app.models import Event
-from flask_login import current_user, login_required # For handling user authentication
+from flask_login import current_user, login_required  # For handling user authentication
+from dotenv import load_dotenv
+import os
+from main import cache
+import requests
+from flask_caching import Cache  # For caching API responses
+
+# Load environment variables
+load_dotenv()
+API_KEY = os.getenv("TICKETMASTER_API_KEY")
+BASE_URL = "https://app.ticketmaster.com/discovery/v2/events"
 
 home = Blueprint('home', __name__)
+
+# Initialize Flask-Caching
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 # Login decorator for protected routes
 def login_required(f):
@@ -29,9 +42,28 @@ def login():
     return render_template('login.html')
 
 @home.route('/events')
+@cache.cached(timeout=300)  # Cache the response for 5 minutes
 def event_listing():
-    # Fetch events from database
-    return render_template('event_listing.html')
+    # Define API parameters
+    params = {
+        "apikey": API_KEY,
+        "keyword": "concert",  # Adjust search criteria as needed
+        "locale": "en-us"
+    }
+
+    try:
+        # Make the API request
+        response = requests.get(BASE_URL, params=params)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        # Extract events data from the API response
+        events_data = response.json().get('_embedded', {}).get('events', [])
+    except requests.exceptions.RequestException as e:
+        # Handle API errors
+        print(f"API request failed: {e}")
+        events_data = []  # Fallback to an empty list
+
+    # Pass the events data to the template
+    return render_template('event_listing.html', events=events_data)
 
 @home.route('/event/<int:event_id>')
 def event_details(event_id):
@@ -59,17 +91,17 @@ def dashboard():
     open_tickets = 10
     closed_today = 5
     avg_response_time = "24 hours"
-    tickets = [] # this is just an example.
+    tickets = []  # this is just an example.
     unread_notifications_count = 2
     return render_template('dashboard.html',
-        current_user=current_user,
-        total_tickets=total_tickets,
-        open_tickets=open_tickets,
-        closed_today=closed_today,
-        avg_response_time=avg_response_time,
-        tickets=tickets,
-        unread_notifications_count=unread_notifications_count
-    )
+                           current_user=current_user,
+                           total_tickets=total_tickets,
+                           open_tickets=open_tickets,
+                           closed_today=closed_today,
+                           avg_response_time=avg_response_time,
+                           tickets=tickets,
+                           unread_notifications_count=unread_notifications_count
+                           )
 
 @home.route('/checkout')
 @login_required
@@ -80,19 +112,19 @@ def checkout():
     service_fees = 10.00
     total_amount = 110.00
     return render_template('checkout.html',
-        cart_items=cart_items,
-        subtotal=subtotal,
-        service_fees=service_fees,
-        total_amount=total_amount
-    )
+                           cart_items=cart_items,
+                           subtotal=subtotal,
+                           service_fees=service_fees,
+                           total_amount=total_amount
+                           )
 
 def get_order(order_id):
     # Dummy function, replace this with an actual database retrieval.
     class DummyOrder:
         def __init__(self, id):
-          self.id = id
-          self.order_date = datetime.utcnow()
-        
+            self.id = id
+            self.order_date = datetime.utcnow()
+
     return DummyOrder(order_id)
 
 @home.route('/order/confirmation/<int:order_id>')
@@ -100,7 +132,6 @@ def get_order(order_id):
 def order_confirmation(order_id):
     order = get_order(order_id)  # Get order details from your database
     return render_template('order_confirmation.html', order=order)
-
 
 @home.route('/profile')
 @login_required
