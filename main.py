@@ -8,7 +8,7 @@ from routes.admin_routes import admin
 from app import models
 from dotenv import load_dotenv
 import os
-from flask_caching import Cache
+from views.extensions import cache  # Import cache from extensions.py
 
 # Load environment variables
 load_dotenv()
@@ -17,7 +17,6 @@ API_KEY = os.getenv("TICKETMASTER_API_KEY")
 # Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
-cache = Cache()  # Initialize Cache here
 
 def create_app():
     # Initialize the Flask app
@@ -28,7 +27,7 @@ def create_app():
 
     # Configure Flask-Caching
     app.config['CACHE_TYPE'] = 'SimpleCache'  # Use SimpleCache for development
-    cache.init_app(app)  # Link Cache to the app
+    cache.init_app(app)  # Initialize cache with the app
 
     # Initialize other extensions
     db.init_app(app)

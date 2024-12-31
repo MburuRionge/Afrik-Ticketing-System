@@ -5,9 +5,8 @@ from app.models import Event
 from flask_login import current_user, login_required  # For handling user authentication
 from dotenv import load_dotenv
 import os
-from main import cache
+from views.extensions import cache  # Import cache from extensions.py
 import requests
-from flask_caching import Cache  # For caching API responses
 
 # Load environment variables
 load_dotenv()
@@ -15,9 +14,6 @@ API_KEY = os.getenv("TICKETMASTER_API_KEY")
 BASE_URL = "https://app.ticketmaster.com/discovery/v2/events"
 
 home = Blueprint('home', __name__)
-
-# Initialize Flask-Caching
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 # Login decorator for protected routes
 def login_required(f):
