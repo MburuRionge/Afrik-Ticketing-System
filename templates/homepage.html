@@ -3,6 +3,27 @@
 {% block title %}AFRIK TICKETING SYSTEM{% endblock %}
 
 {% block content %}
+<!-- Navigation Bar -->
+<nav class="bg-gray-800 text-white p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <a href="{{ url_for('home.homepage') }}" class="text-xl font-bold">Afrik Ticketing System</a>
+        <ul class="flex space-x-6">
+            <li><a href="{{ url_for('home.homepage') }}" class="hover:text-blue-500">Home</a></li>
+            <li><a href="{{ url_for('home.event_listing') }}" class="hover:text-blue-500">Events</a></li>
+            <li><a href="{{ url_for('home.contact_us') }}" class="hover:text-blue-500">Contact</a></li>
+            <li><a href="{{ url_for('home.faq') }}" class="hover:text-blue-500">FAQ</a></li>
+            <li><a href="{{ url_for('home.terms_and_conditions') }}" class="hover:text-blue-500">Terms</a></li>
+            {% if 'user_id' in session %}
+                <li><a href="{{ url_for('home.dashboard') }}" class="hover:text-blue-500">Dashboard</a></li>
+                <li><a href="{{ url_for('home.user_profile') }}" class="hover:text-blue-500">Profile</a></li>
+                <li><a href="{{ url_for('home.logout') }}" class="hover:text-blue-500">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('home.login') }}" class="hover:text-blue-500">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
 <!-- Hero Section -->
 <section class="relative h-[600px] flex items-center justify-center hero-section">
     <!-- Background Image with Overlay -->
@@ -135,10 +156,11 @@
             <div>
                 <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                 <ul class="space-y-2">
-                    <li><a href="#" class="text-gray-400 hover:text-white transition">About Us</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition">Contact</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('home.homepage') }}" class="text-gray-400 hover:text-white transition">Home</a></li>
+                    <li><a href="{{ url_for('home.event_listing') }}" class="text-gray-400 hover:text-white transition">Events</a></li>
+                    <li><a href="{{ url_for('home.contact_us') }}" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                    <li><a href="{{ url_for('home.faq') }}" class="text-gray-400 hover:text-white transition">FAQ</a></li>
+                    <li><a href="{{ url_for('home.terms_and_conditions') }}" class="text-gray-400 hover:text-white transition">Terms</a></li>
                 </ul>
             </div>
             
