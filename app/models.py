@@ -1,20 +1,19 @@
+# models.py
 from datetime import datetime
 from flask_login import UserMixin
-from sqlalchemy import Column, Integer, String, Numeric  # Use Numeric instead of Decimal
+from sqlalchemy import Column, Integer, String, Numeric
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from views.extensions import db  # Import shared db instance
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))  # Use password_hash instead of password
+    password_hash = db.Column(db.String(128))
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     is_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Columflask db initn(db.DateTime, default=datetime.utcnow)
     orders = db.relationship('Order', backref='user', lazy=True)
 
     def set_password(self, password):
@@ -54,14 +53,14 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
     quantity = db.Column(db.Integer)
-    total_amount = db.Column(Numeric(10, 2))  # Changed to Numeric
+    total_amount = db.Column(Numeric(10, 2))
     status = db.Column(db.String(20))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
-    amount = db.Column(Numeric(10, 2))  # Changed to Numeric
+    amount = db.Column(Numeric(10, 2))
     payment_method = db.Column(db.String(20))
     payment_intent_id = db.Column(db.String(100))
     status = db.Column(db.String(20))

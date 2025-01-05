@@ -1,7 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FloatField, IntegerField, TextAreaField, DateTimeField, SelectField
+from wtforms import EmailField, StringField, PasswordField, SubmitField, FloatField, IntegerField, TextAreaField, DateTimeField, SelectField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 from datetime import datetime
+
+
+class RegistrationForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[
+        DataRequired(),
+        Length(min=6, message="Password must be at least 6 characters long")
+    ])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])

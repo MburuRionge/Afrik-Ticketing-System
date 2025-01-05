@@ -1,11 +1,14 @@
+# routes/routes.py
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from functools import wraps
 from datetime import datetime
-from app.models import Event
-from flask_login import current_user, login_required  # For handling user authentication
+from flask_login import current_user, login_required, login_user, logout_user
 from dotenv import load_dotenv
 import os
-from views.extensions import cache  # Import cache from extensions.py
+from views.extensions import db  # Import shared db instance
+from app.models import User
+from forms.forms import *
+from views.extensions import cache
 import requests
 
 # Load environment variables
@@ -32,10 +35,75 @@ def homepage():
 
 @home.route('/login', methods=['GET', 'POST'])
 def login():
+    # If user is already logged in, redirect to homepage
+    if current_user.is_authenticated:
+        return redirect(url_for('home.homepage'))
+    
+    form = LoginForm()
+    
     if request.method == 'POST':
-        # Add login logic here
-        pass
-    return render_template('login.html')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Logged in successfully!', category='success')
+                login_user(user, remember=True)
+                
+                # Get the next page from the URL if it exists, otherwise go to homepage
+                next_page = request.args.get('next')
+                return redirect(next_page) if next_page else redirect(url_for('home.homepage'))
+            else:
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
+    
+    return render_template('login.html', form=form, user=current_user)
+
+@home.route('/register', methods=['GET', 'POST'])
+def register():
+    # If user is already logged in, redirect to homepage
+    if current_user.is_authenticated:
+        return redirect(url_for('home.homepage'))
+    
+    form = RegistrationForm()
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            flash('Email address already exists.', category='error')
+        else:
+            new_user = User(
+                email=email,
+                name=name,
+                password=generate_password_hash(password, method='sha256')
+            )
+            try:
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user, remember=True)
+                flash('Account created successfully!', category='success')
+                return redirect(url_for('home.homepage'))
+            except Exception as e:
+                db.session.rollback()
+                flash('An error occurred. Please try again.', category='error')
+                return redirect(url_for('auth.register'))
+    
+    return render_template('login.html', form=form, user=current_user)
+
+# Define the logout route which requires the user to be logged in
+@home.route('/logout')
+@login_required
+def logout():
+    logout_user()  # Log the user out
+    return redirect(url_for('home.login'))  # Redirect to the login page
 
 @home.route('/events')
 @cache.cached(timeout=300)  # Cache the response for 5 minutes
