@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     is_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Columflask db initn(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     orders = db.relationship('Order', backref='user', lazy=True)
 
     def set_password(self, password):
